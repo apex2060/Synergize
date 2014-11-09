@@ -1,0 +1,111 @@
+.view{
+	-webkit-transition:.5s ease-in-out all;
+	transition:.5s ease-in-out all;
+	width: 100%;
+	overflow: hidden;
+}
+
+.view.ng-enter{
+	margin-top: 0px;
+}
+.view.ng-enter.ng-enter-active{
+	margin-top:100%;
+}
+
+.view.ng-leave{
+	margin-top: 0px;
+}
+.view.ng-leave-active{
+	margin-top:100%;
+}
+
+
+/*.view.ng-enter{
+	margin-left: 0px;
+}
+.view.ng-enter.ng-enter-active{
+	margin-left:100%;
+}
+
+.view.ng-leave{
+	margin-left: 0px;
+}
+.view.ng-leave-active{
+	margin-left:-100%;
+}
+*/
+
+
+#home.ng-enter{
+	opacity: 0;
+	margin-top: 0px;
+}
+#home.ng-enter.ng-enter-active{
+	opacity: 0;
+	margin-top: 0px;
+}
+
+#home.ng-leave{
+	opacity: 1;
+	margin-top: 0px;
+}
+#home.ng-leave-active{
+	opacity: 0;
+	margin-top: 0px;
+}
+
+
+
+
+
+#account.ng-enter{
+	margin-left: 100%;
+	margin-top:-100%;
+}
+#account.ng-enter.ng-enter-active{
+	margin-left:100%;
+	margin-top:-100%;
+}
+
+#account.ng-leave{
+	margin-left: 0%;
+}
+#account.ng-leave-active{
+	margin-left:100%;
+	margin-top:-100%;
+}
+
+
+
+
+
+
+.allitems .card{
+	-webkit-transition:.5s linear all;
+	transition:.5s linear all;
+	overflow: hidden;
+	border-radius: 5px;
+}
+.allitems .card.ng-enter-stagger, .allitems .card.ng-leave-stagger {
+	-webkit-transition-delay: 0.1s;
+	transition-delay: 0.1s;
+	-webkit-transition-duration: 0s;
+	transition-duration: 0s;
+}
+
+.allitems .card.ng-enter{
+	opacity: 0;
+	border-radius: 200px;
+}
+.allitems .card.ng-enter-active{
+	opacity: 1;
+	border-radius: 5px;
+}
+
+.allitems .card.ng-leave{
+	opacity: 1;
+}
+.allitems .card.ng-leave-active{
+	opacity: 0;
+	border-radius: 200px;
+}*/

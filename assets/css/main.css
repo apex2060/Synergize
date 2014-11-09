@@ -1,0 +1,222 @@
+/*CUSTOM*/
+html,body{
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+header{
+	position: fixed;
+	width: 100%;
+	z-index: 1000;
+}
+section{
+	padding: 100px 0 100px 0;
+}
+a{
+	cursor: pointer;
+}
+h1{
+	text-align: center;
+}
+
+
+
+/* Main */
+#alerts .alert{
+	box-shadow: -5px -5px 5px #000;
+}
+
+
+
+.locked #lock-back{
+	display: block;
+}
+#lock-back{
+	display: none !important;
+	position: absolute;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	box-shadow: inset 0px 0px 15px #F00;
+	background: #000;
+	z-index: 100000;
+}
+#lock{
+	position: absolute;
+	top: calc(50% - 250px);
+	left: calc(50% - 250px);
+	width: 500px;
+	height: 500px;
+	border-radius: 500px;
+	background: #AAA;
+	border: 15px solid #999;
+}
+
+
+.mission{
+	position: absolute;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background: #000;
+	box-shadow: inset 0px 0px 15px #0F0;
+	z-index: 10000;
+}
+.mission>div{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	padding: 50px;
+}
+
+.center400{
+	display: block;
+	margin: 0px auto;
+	padding: 25px;
+	width: 400px;
+	height: 400px;
+	max-width: 100%;
+	background: #000;
+	border: 4px solid #666;
+	border-radius: 5px;
+}
+.gray{
+	-webkit-filter: sepia(1) hue-rotate(180deg);
+}
+.insecure .gray{
+	-webkit-filter: sepia(1) hue-rotate(290deg);
+}
+.secure .gray{
+	-webkit-filter: sepia(1) hue-rotate(90deg);
+}
+
+
+
+
+
+
+
+
+#panel{
+    float:left;
+    width:785px;
+}
+#crop_result{
+    background-color:#fff;
+    display:block;
+    height:200px;
+    width:200px;
+}
+
+
+
+
+
+/*CSS Overrides*/
+.modal-body>img{
+	max-width: 100%;
+}
+.fit{
+	display: block;
+	margin: 0px auto;
+	max-width: 100%;
+}
+#map-canvas{
+	width: 100%;
+	height: 500px;
+}
+
+.tr, .br, .bl, .tl{
+	position: absolute;
+	padding: 5px;
+	z-index: 999;
+}
+.tr, .tl{
+	top: 0px;
+}
+.br, .bl{
+	bottom: 0px;
+}
+.tl, .bl{
+	left: 0px;
+}
+.tr, .br{
+	right: 0px;
+}
+
+.point25{
+	width: 20%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*JCROP*/
+.jcrop-holder { text-align: left; }
+
+.jcrop-vline, .jcrop-hline
+{
+	font-size: 0;
+	position: absolute;
+	background: white url('Jcrop.gif') top left repeat;
+}
+.jcrop-vline { height: 100%; width: 1px !important; }
+.jcrop-hline { width: 100%; height: 1px !important; }
+.jcrop-handle {
+	font-size: 1px;
+	width: 7px !important;
+	height: 7px !important;
+	border: 1px #eee solid;
+	background-color: #333;
+	*width: 9px;
+	*height: 9px;
+}
+
+.jcrop-tracker { width: 100%; height: 100%; }
+
+.custom .jcrop-vline,
+.custom .jcrop-hline
+{
+	background: yellow;
+}
+.custom .jcrop-handle
+{
+	border-color: black;
+	background-color: #C7BB00;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* RESPONSIVE */
+
+/* Small devices (tablets, 768px and down) */
+@media (max-width: 768px) {
+	.point25{
+		width: 100%;
+	}
+}
