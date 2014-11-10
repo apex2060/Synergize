@@ -1,6 +1,6 @@
 var it = {};
 
-var app = angular.module('SocialCIA', ['pascalprecht.translate','ngAnimate','ngResource','ngRoute','ngTouch']);
+var app = angular.module('Synergize', ['pascalprecht.translate','ngAnimate','ngResource','ngRoute','ngTouch']);
 app.config(function($routeProvider,$translateProvider,$controllerProvider) {
 	app.lazy = {
 		controller: $controllerProvider.register
@@ -10,9 +10,8 @@ app.config(function($routeProvider,$translateProvider,$controllerProvider) {
 		var deferred = $q.defer();
 		var includes = [];
 
-		if(module && view)
-			includes.push('modules/'+module+'/'+view+'/ctrl')
-		else if(module)
+	
+		if(module)
 			includes.push('modules/'+module+'/ctrl')
 
 		//CAN ADD CUSTOM REQUIRES FOR VIEW... OR ANYTHING ELSE HERE.
@@ -25,14 +24,14 @@ app.config(function($routeProvider,$translateProvider,$controllerProvider) {
 
 
 	$routeProvider
-	.when('/static/:view', {
+	.when('/main/:view', {
 		reloadOnSearch: false,
 		templateUrl: 'views/main.html',
 		controller: 'MainCtrl',
 		resolve: {
 			load: ['$q', '$rootScope', '$location', function ($q, $rootScope, $location) {
 				var pieces = $location.path().split('/');
-				return requires($q, null, pieces[2], null)
+				return requires($q, null, pieces[1], null)
 			}]
 		}
 	})
@@ -70,7 +69,7 @@ app.config(function($routeProvider,$translateProvider,$controllerProvider) {
 		}
 	})
 	.otherwise({
-		redirectTo: '/static/home'
+		redirectTo: '/main/home'
 	});
 
 	$translateProvider.useStaticFilesLoader({
@@ -82,5 +81,5 @@ app.config(function($routeProvider,$translateProvider,$controllerProvider) {
 
 
 angular.element(document).ready(function() {
-	angular.bootstrap(document, ['SocialCIA']);
+	angular.bootstrap(document, ['Synergize']);
 });

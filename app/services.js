@@ -43,10 +43,35 @@ app.factory('userService', function ($rootScope, $http, $q, config) {
  				$rootScope.user=data;
 				$rootScope.$broadcast('authenticated', data);
  				$('#userLoginModal').modal('hide');
- 			}).error(function(data){
- 				console.error('error',data.error);
-				// $('#loading').removeClass('active');
+ 			}).error(function(error){
+ 				$rootScope.alert.add('error', error)
+ 				$rootScope.error = error;
 			});
+ 		},
+ 		signupModal:function(){
+ 			$('#userSignupModal').modal('show');
+ 		},
+ 		signup:function(user){
+ 			if(user){
+	 			user.fullName = user.firstName + ' ' + user.lastName
+	 			user.username = user.email;
+	 			if(user.password!=user.password2){
+	 				$rootScope.alert.add('error', 'Your passwords do not match.')
+	 			}else{
+	 				$rootScope.error = null;
+	 				delete user.password2;
+	 				$http.post(config.parseRoot+'users', user).success(function(data){
+	 					$('#userSignupModal').modal('hide');
+	 					window.location.hash='#/main/welcome'
+	 					userService.login(user);
+	 				}).error(function(error){
+	 					$rootScope.alert.add('error', error)
+	 					$rootScope.error = error;
+	 				});
+	 			}
+	 		}else{
+	 			$rootScope.alert.add('error', 'Please enter your information.')
+	 		}
  		},
  		logout:function(){
  			localStorage.clear();
@@ -66,45 +91,55 @@ app.factory('userService', function ($rootScope, $http, $q, config) {
 
 
 
-// app.factory('directoryService', function ($rootScope, $http, $q, config, userService) {
-// 	var directory = false;
-// 	var directoryService = {
-// 		init:function(){
-// 			var deferred = $q.defer();
-// 			userService.user().then(function(){
-// 				if(localStorage.directory){
-// 					directory = angular.fromJson(localStorage.directory)
-// 					deferred.resolve(directory);
-// 				}else{
-// 					$http.get(config.parseRoot+'classes/Family?limit=900')
-// 					.success(function(data){
-// 						directory = data.results;
-// 						localStorage.directory = angular.toJson(directory)
-// 						deferred.resolve(directory);
-// 					})
-// 				}
-// 			})
-// 			return deferred.promise;
-// 		},
-// 		reload:function(){
-// 			var deferred = $q.defer();
-// 			userService.user().then(function(){
-// 				$http.get(config.parseRoot+'classes/Family?limit=900')
-// 				.success(function(data){
-// 					directory = data.results;
-// 					localStorage.directory = angular.toJson(directory)
-// 					deferred.resolve(directory);
-// 				})
-// 			});
-// 			return deferred.promise;
-// 		},
-// 		list:function(){
-// 			return directoryService.init();
-// 		}
-// 	}
-// 	it.directoryService = directoryService;
-// 	return directoryService;
-// });
+app.factory('taskService', function ($rootScope, $http, $q, config, userService) {
+	var taskList = false;
+	var taskService = {
+		init:function(){
+			var deferred = $q.defer();
+			userService.user().then(function(){
+				if(localStorage.taskList){
+					taskList = angular.fromJson(localStorage.taskList)
+					deferred.resolve(taskList);
+				}else{
+					$http.get(config.parseRoot+'classes/Task')
+					.success(function(data){
+						taskList = data.results;
+						localStorage.taskList = angular.toJson(taskList)
+						deferred.resolve(taskList);
+					})
+				}
+			})
+			return deferred.promise;
+		},
+		reload:function(){
+			var deferred = $q.defer();
+			userService.user().then(function(){
+				$http.get(config.parseRoot+'classes/Task')
+				.success(function(data){
+					taskList = data.results;
+					localStorage.taskList = angular.toJson(taskList)
+					deferred.resolve(taskList);
+				})
+			});
+			return deferred.promise;
+		},
+		list:function(){
+			return taskService.init();
+		},
+		add:function(task){
+			var deferred = $q.defer();
+			$http.post(config.parseRoot+'classes/Task', task)
+			.success(function(data){
+				console.log(data)
+				it.newTask = data;
+				deferred.resolve(data);
+			})
+			return deferred.promise;
+		}
+	}
+	it.taskService = taskService;
+	return taskService;
+});
 
 
 

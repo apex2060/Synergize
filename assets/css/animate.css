@@ -1,4 +1,4 @@
-.view{
+/*.view{
 	-webkit-transition:.5s ease-in-out all;
 	transition:.5s ease-in-out all;
 	width: 100%;
@@ -20,20 +20,6 @@
 }
 
 
-/*.view.ng-enter{
-	margin-left: 0px;
-}
-.view.ng-enter.ng-enter-active{
-	margin-left:100%;
-}
-
-.view.ng-leave{
-	margin-left: 0px;
-}
-.view.ng-leave-active{
-	margin-left:-100%;
-}
-*/
 
 
 #home.ng-enter{
@@ -108,4 +94,4 @@
 .allitems .card.ng-leave-active{
 	opacity: 0;
 	border-radius: 200px;
-}*/
+}*/*/

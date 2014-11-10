@@ -4,13 +4,28 @@ var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routePar
 
 	var rootTools = {
 		user: userService,
+		auth:function(){
+			var config = {
+				'client_id': '565032103820-70r475n76136diauosq8i3et19d2khmf.apps.googleusercontent.com',
+				'scope': 	' https://www.googleapis.com/auth/urlshortener'+
+							' https://mail.google.com/'+
+							' https://www.googleapis.com/auth/gmail.modify'+
+							' https://www.googleapis.com/auth/gmail.readonly'
+			};
+			gapi.auth.authorize(config, function() {
+				rootTools.alert.add('success','login complete');
+				var token = gapi.auth.getToken();
+				rootTools.alert.add('success',token);
+				it.token = token;
+			});
+		},
 		url:function(){
 			if(!$routeParams.module)
 				return 'views/'+$routeParams.view+'.html';
 			else if(!$routeParams.view)
 				return 'modules/'+$routeParams.module+'/main.html';
 			else
-				return 'modules/'+$routeParams.module+'/'+$routeParams.view+'/main.html';
+				return 'modules/'+$routeParams.module+'/'+$routeParams.view+'.html';
 		},
 		init:function(){
 			if(!$rootScope.temp){
@@ -18,8 +33,7 @@ var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routePar
 				$rootScope.temp = {};
 				userService.user().then(function(){
 					//Do things than need to be done once the user is authenticated.
-					// family.init();
-					// tag.init();
+					// Load message, alert, task (count)
 				});
 				$scope.$on('$viewContentLoaded', function(event) {
 					// ga('send', 'pageview', $location.path());
@@ -28,6 +42,9 @@ var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routePar
 		},
 		alert:{
 			add:function(type, message){
+				if(type == 'error')
+					type = 'danger';
+
 				var alert = {
 					type: 'alert-'+type,
 					message: message

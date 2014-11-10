@@ -4,6 +4,11 @@ html,body{
 	padding: 0px;
 	margin: 0px;
 }
+body{
+	background-image: url('/assets/img/background/cristus.jpg');
+	background-size: cover;
+	background-attachment: fixed;
+}
 header{
 	position: fixed;
 	width: 100%;
@@ -27,6 +32,24 @@ h1{
 }
 
 
+
+/*Something*/
+.nav .notify{
+	text-align: center;
+	font-size: 18px;
+	line-height: 50px;
+	color: #FFF;
+	border-right: 1px solid #FFF;
+}
+.nav .notify a{
+	padding: 15px 20px;
+}
+.nav .notify .badge{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #9EA;
+}
 
 .locked #lock-back{
 	display: block;
