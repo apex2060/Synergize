@@ -1,24 +1,29 @@
 var it = {};
 
 var app = angular.module('Synergize', ['pascalprecht.translate','ngAnimate','ngResource','ngRoute','ngTouch']);
-app.config(function($routeProvider,$translateProvider,$controllerProvider) {
+app.config(function($routeProvider,$translateProvider,$controllerProvider,$provide) {
 	app.lazy = {
-		controller: $controllerProvider.register
+		controller: $controllerProvider.register,
+		factory: 	$provide.factory,
+		service: 	$provide.service,
 	};
 
 	function requires($q, module, view, id){
 		var deferred = $q.defer();
 		var includes = [];
 
-	
 		if(module)
 			includes.push('modules/'+module+'/ctrl')
+		if(module && view)
+			includes.push('modules/'+module+'/'+view+'/ctrl')
 
 		//CAN ADD CUSTOM REQUIRES FOR VIEW... OR ANYTHING ELSE HERE.
-
-		require(includes, function () {
+		if(includes.length)
+			require(includes, function () {
+				deferred.resolve();
+			});
+		else
 			deferred.resolve();
-		});
 		return deferred.promise;
 	}
 
@@ -31,7 +36,18 @@ app.config(function($routeProvider,$translateProvider,$controllerProvider) {
 		resolve: {
 			load: ['$q', '$rootScope', '$location', function ($q, $rootScope, $location) {
 				var pieces = $location.path().split('/');
-				return requires($q, null, pieces[1], null)
+				return requires($q, null, pieces[2], null)
+			}]
+		}
+	})
+	.when('/main/:view/:id', {
+		reloadOnSearch: false,
+		templateUrl: 'views/main.html',
+		controller: 'MainCtrl',
+		resolve: {
+			load: ['$q', '$rootScope', '$location', function ($q, $rootScope, $location) {
+				var pieces = $location.path().split('/');
+				return requires($q, null, pieces[2], pieces[3])
 			}]
 		}
 	})

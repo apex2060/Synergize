@@ -25,7 +25,7 @@ var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routePar
 			else if(!$routeParams.view)
 				return 'modules/'+$routeParams.module+'/main.html';
 			else
-				return 'modules/'+$routeParams.module+'/'+$routeParams.view+'.html';
+				return 'modules/'+$routeParams.module+'/'+$routeParams.view+'/main.html';
 		},
 		init:function(){
 			if(!$rootScope.temp){

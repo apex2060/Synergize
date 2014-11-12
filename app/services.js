@@ -28,10 +28,7 @@ app.factory('userService', function ($rootScope, $http, $q, config) {
 				//Prompt for login
 			});
  		},
- 		loginModal:function(){
- 			$('#userLoginModal').modal('show');
- 		},
- 		login:function(user){
+ 		login:function(user, signup){
  			var login = {
  				username:user.username,
  				password:user.password
@@ -42,35 +39,31 @@ app.factory('userService', function ($rootScope, $http, $q, config) {
  				localStorage.user=angular.toJson(data);
  				$rootScope.user=data;
 				$rootScope.$broadcast('authenticated', data);
- 				$('#userLoginModal').modal('hide');
+				if(!signup)
+				window.location.hash='#/dashboard/main';
  			}).error(function(error){
- 				$rootScope.alert.add('error', error)
+ 				$rootScope.alert('error', error)
  				$rootScope.error = error;
 			});
- 		},
- 		signupModal:function(){
- 			$('#userSignupModal').modal('show');
  		},
  		signup:function(user){
  			if(user){
 	 			user.fullName = user.firstName + ' ' + user.lastName
-	 			user.username = user.email;
 	 			if(user.password!=user.password2){
-	 				$rootScope.alert.add('error', 'Your passwords do not match.')
+	 				$rootScope.alert('error', 'Your passwords do not match.')
 	 			}else{
 	 				$rootScope.error = null;
 	 				delete user.password2;
 	 				$http.post(config.parseRoot+'users', user).success(function(data){
-	 					$('#userSignupModal').modal('hide');
+	 					userService.login(user, true);
 	 					window.location.hash='#/main/welcome'
-	 					userService.login(user);
 	 				}).error(function(error){
-	 					$rootScope.alert.add('error', error)
+	 					$rootScope.alert('error', error)
 	 					$rootScope.error = error;
 	 				});
 	 			}
 	 		}else{
-	 			$rootScope.alert.add('error', 'Please enter your information.')
+	 			$rootScope.alert('error', 'Please enter your information.')
 	 		}
  		},
  		logout:function(){
