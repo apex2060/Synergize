@@ -1,0 +1,16 @@
+<ul class="tl">
+	<li ng-repeat="event in timeline" ng-class="'tl-'+event.side">
+		<div class="tl-date" ng-show="event.isMilestone" ng-class="'tl-'+event.color">{{event.moment}}</div>
+		<div class="tl-circ" ng-hide="event.isMilestone" ng-class="'tl-'+event.color"><i class="fa fa-{{event.icon}}" ng-show="event.icon"></i></div>
+		<div class="tl-panel" ng-hide="event.isMilestone">
+			<div class="tl-heading">
+				<h4>{{event.title}}</h4>
+				<p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> {{event.moment}}</small></p>
+			</div>
+			<div class="tl-body">
+				<p>{{event.body}}</p>
+				<a class="btn pull-right btn-{{event.link.style}}" href="{{event.link.url}}" ng-show="event.link">{{event.link.text}}</a>
+			</div>
+		</div>
+	</li>
+</ul>

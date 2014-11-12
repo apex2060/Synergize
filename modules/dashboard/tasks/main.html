@@ -1,0 +1,57 @@
+<!-- 
+	- Load all users (allow assignment of tasks to users)
+	- Allow creation of 
+ -->
+
+<div class="container" ng-controller="DashboardCtrl">
+	<div class="row">
+		<div class="col-md-4">
+			<ul class="list-group">
+				<li class="list-group-item">
+					<input type="text" class="form-control" ng-model="temp.taskSearch">
+				</li>
+				<li class="list-group-item" ng-repeat="task in tasks">
+					<span>{{task.title}}</span>
+					<span class="badge pull-right">{{task.urgency}}</span>
+				</li>
+				<li class="list-group-item">
+					<button type="button" class="btn btn-success btn-block" ng-click="tools.task.reload()">Reload</button>
+				</li>
+			</ul>
+		</div>
+		<div class="col-md-8">
+			<div class="well clearfix">
+				<h1>Add A Task</h1>
+				<form class="form-horizontal" role="form" ng-submit="tools.task.add(temp.task)">
+					<div class="form-group">
+						<label for="taskTitle" class="col-sm-2 control-label">Title</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="taskTitle" placeholder="Title" ng-model="temp.task.title">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="taskDescription" class="col-sm-2 control-label">Description</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="taskDescription" placeholder="Description" ng-model="temp.task.description"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="taskDue" class="col-sm-2 control-label">Due Date</label>
+						<div class="col-sm-10">
+							<input type="date" class="form-control" id="taskDue" ng-model="temp.task.due">
+						</div>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Call</button>
+						<button type="button" class="btn btn-default">Text</button>
+						<button type="button" class="btn btn-default">Email</button>
+					</div>
+					<button type="button" class="btn btn-primary">Tag Users</button>
+					<button type="button" class="btn btn-primary">Tag Contact</button>
+					<button type="button" class="btn btn-primary">Tag Labels</button>
+					<button type="submit" class="btn btn-info pull-right">Create Task</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

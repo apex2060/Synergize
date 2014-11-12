@@ -1,1 +1,17 @@
-<h1>Dashboard Home</h1>
+<div class="container-fluid" ng-controller="DashboardCtrl">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="well">
+				<h1>What's New</h1>
+				<div ng-include="'/partials/timeline.html'"></div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="">
+				<h1>Summary</h1>
+				<p>This feed has an organized list of everything that is happening.  You can interact with each event in a way unique to the event category.  If the event was a missed call you will interact through a communication dialog.  If the event was a post to the internal board, you can open it to see comments and make comments yourself.  If the event was a phonecall you made you can open the communication dialog and followup on the communication.</p>
+				
+			</div>
+		</div>
+	</div>
+</div>
