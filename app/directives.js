@@ -296,4 +296,14 @@ app.directive('map', ['geoService', function(geoService){
 			}
 		}
 	}
-}]);
+}])
+
+
+
+
+
+
+
+
+
+// popover({html:true,content:'<h1>Hi</h1><a class="btn btn-default">Opa</a>', placement:'bottom',trigger:'click'})

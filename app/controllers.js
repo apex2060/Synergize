@@ -2,7 +2,8 @@ var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routePar
 	$rootScope.rp = $routeParams;
 	$rootScope.config = config;
 	var taskResource = new dataService.resource('Task', 'taskList');
-
+	var contactResource = new dataService.resource('Contact', 'contactList');
+	
 	var rootTools = {
 		user: userService,
 		auth:function(){
@@ -36,6 +37,7 @@ var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routePar
 					//Do things than need to be done once the user is authenticated.
 					// Load message, alert, task (count)
 					rootTools.task.init();
+					rootTools.contact.init();
 				});
 				$scope.$on('$viewContentLoaded', function(event) {
 					// ga('send', 'pageview', $location.path());
@@ -67,7 +69,20 @@ var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routePar
 					console.log('tasks from main')
 				});
 				taskResource.item.list().then(function(data){
-					$rootScope.tasks = data.results;	
+					if(data)
+						$rootScope.tasks = data.results;	
+				});
+			}
+		},
+		contact:{
+			init:function(){
+				contactResource.addListener(function(data){
+					$rootScope.contacts = data.results;
+					console.log('contacts from main')
+				});
+				contactResource.item.list().then(function(data){
+					if(data)
+						$rootScope.contacts = data.results;	
 				});
 			}
 		},
