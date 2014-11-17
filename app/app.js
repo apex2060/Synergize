@@ -12,53 +12,39 @@ app.config(function($routeProvider,$translateProvider,$controllerProvider,$provi
 		var deferred = $q.defer();
 		var includes = [];
 
-		if(module)
-			includes.push('modules/'+module+'/ctrl')
-		if(module && view)
-			includes.push('modules/'+module+'/'+view+'/ctrl')
+		console.log(module,view,id)
+		if(module == 'admin')
+			if(view)
+				includes.push('modules/admin/'+view+'/ctrl');
+			else
+				deferred.resolve();
+		else if(module == 'dashboard')
+			includes.push('modules/dashboard/ctrl');
+		else if(module == 'user')
+			includes.push('modules/user/ctrl');
+		else
+			deferred.resolve();
 
-		//CAN ADD CUSTOM REQUIRES FOR VIEW... OR ANYTHING ELSE HERE.
 		if(includes.length)
 			require(includes, function () {
 				deferred.resolve();
 			});
 		else
 			deferred.resolve();
+			
 		return deferred.promise;
 	}
 
 
 	$routeProvider
-	.when('/main/:view', {
+	.when('/:view', {
 		reloadOnSearch: false,
 		templateUrl: 'views/main.html',
 		controller: 'MainCtrl',
 		resolve: {
 			load: ['$q', '$rootScope', '$location', function ($q, $rootScope, $location) {
 				var pieces = $location.path().split('/');
-				return requires($q, null, pieces[2], null)
-			}]
-		}
-	})
-	.when('/main/:view/:id', {
-		reloadOnSearch: false,
-		templateUrl: 'views/main.html',
-		controller: 'MainCtrl',
-		resolve: {
-			load: ['$q', '$rootScope', '$location', function ($q, $rootScope, $location) {
-				var pieces = $location.path().split('/');
-				return requires($q, null, pieces[2], pieces[3])
-			}]
-		}
-	})
-	.when('/:module', {
-		reloadOnSearch: false,
-		templateUrl: 'views/main.html',
-		controller: 'MainCtrl',
-		resolve: {
-			load: ['$q', '$rootScope', '$location', function ($q, $rootScope, $location) {
-				var pieces = $location.path().split('/');
-				return requires($q, pieces[1], null, null)
+				return requires($q, null, pieces[1], null)
 			}]
 		}
 	})
@@ -80,12 +66,12 @@ app.config(function($routeProvider,$translateProvider,$controllerProvider,$provi
 		resolve: {
 			load: ['$q', '$rootScope', '$location', function ($q, $rootScope, $location) {
 				var pieces = $location.path().split('/');
-				return requires($q, null, pieces[1], pieces[2], pieces[3])
+				return requires($q, pieces[1], pieces[2], pieces[3])
 			}]
 		}
 	})
 	.otherwise({
-		redirectTo: '/main/home'
+		redirectTo: '/home'
 	});
 
 	$translateProvider.useStaticFilesLoader({

@@ -25,7 +25,7 @@
 	
 	<link href="assets/css/timeline.css" 		rel="stylesheet" media="screen">
 </head>
-<body ng-controller="MainCtrl" ng-swipe-left="tools.side.swipe('left')"  ng-swipe-right="tools.side.swipe('right')">
+<body ng-swipe-left="tools.side.swipe('left')"  ng-swipe-right="tools.side.swipe('right')">
 
 	<header ng-include="'partials/header.html'"></header>
 	<section class="view {{status}}" id="{{view}}" ng-view></section>

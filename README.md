@@ -17,7 +17,10 @@ https://github.com/apex2060/synergize
 --------
 Purpose:
 --------
-
+Enable Synergize to run as an effective organization with minimal overhead costs.
+Enable effective collaboration and communication through the use of the best technology.
+Allow management to organize and deligate work.
+Provide accurate feedback to 
 
 ----------
 Questions:
@@ -62,3 +65,14 @@ Roles
 		- 
 	Volunteer
 		- Same as employee?
+		- 
+		
+
+
+
+
+
+
+
+
+https://github.com/rendro/easy-pie-chart/

@@ -7,6 +7,7 @@ app.factory('config', function ($rootScope, $http) {
 		fireRoot: 			'https://synergize.firebaseio.com/',
 		fireRef: 			new Firebase('https://synergize.firebaseio.com/'),
 	 	googleApiKey: 		'AIzaSyBtf7NRN1PA58x9b3E_UKENB36jCyqdH0I',
+	 	roles: 				['Admin','Manager','Volunteer','ValidUser','BlockedUser']
 	};
 https://synergize.firebaseio.com/
 	Parse.initialize(config.parseAppId, config.parseJsKey);

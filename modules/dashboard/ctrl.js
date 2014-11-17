@@ -1,6 +1,6 @@
 var DashboardCtrl = app.lazy.controller('DashboardCtrl', function($rootScope, $scope, $routeParams, $timeout, config, userService, dataService){
-	var taskResource 	= new dataService.resource('Task', 'taskList');
-	var contactResource = new dataService.resource('Contact', 'contactList');
+	var taskResource 	= new dataService.resource({className: 'Task', identifier:'taskList'});
+	var contactResource = new dataService.resource({className: 'Contact', identifier:'contactList'});
 	it.tr = taskResource;
 	it.cr = contactResource;
 	
@@ -35,14 +35,29 @@ var DashboardCtrl = app.lazy.controller('DashboardCtrl', function($rootScope, $s
 			init: function(){
 				//Do something on controller init
 			},
-			add:function(){
-				var contact = $rootScope.temp.contact
+			focus:function(contact){
+				$rootScope.temp.viewContact = contact;	
+			},
+			close:function(){
+				$rootScope.temp.viewContact = null;
+			},
+			edit:function(contact){
+				$rootScope.temp.contact = contact;
+				$rootScope.temp.viewContact = null;	
+			},
+			add:function(contact){
 				if(!contact)
 					exit;
 				contact.fullName = contact.firstName+' '+contact.lastName;
-				contactResource.item.add($rootScope.temp.contact).then(function(){
+				contactResource.item.save(contact).then(function(){
 					$rootScope.temp.contact = {};
+					$rootScope.alert('success', 'Contact saved.')
 				})
+			},
+			remove:function(contact){
+				if(confirm('Are you sture you want to delete this contact?')){
+					contactResource.item.remove(contact);
+				}
 			}
 		},
 		timeline:{

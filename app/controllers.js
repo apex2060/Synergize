@@ -1,8 +1,8 @@
 var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routeParams, config, userService, dataService){
 	$rootScope.rp = $routeParams;
 	$rootScope.config = config;
-	var taskResource = new dataService.resource('Task', 'taskList');
-	var contactResource = new dataService.resource('Contact', 'contactList');
+	var taskResource = new dataService.resource({className: 'Task', identifier:'taskList'});
+	var contactResource = new dataService.resource({className: 'Contact', identifier:'contactList'});
 	
 	var rootTools = {
 		user: userService,
@@ -22,12 +22,16 @@ var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routePar
 			});
 		},
 		url:function(){
-			if(!$routeParams.module)
-				return 'views/'+$routeParams.view+'.html';
-			else if(!$routeParams.view)
-				return 'modules/'+$routeParams.module+'/main.html';
+			var subModules = ['admin','dashboard'];
+			if(subModules.indexOf($routeParams.module) != -1)
+				if($routeParams.view)
+					return 'modules/'+$routeParams.module+'/'+$routeParams.view+'/main.html';
+				else
+					return 'views/404.html';
+			else if($routeParams.module && $routeParams.view)
+				return 'modules/'+$routeParams.module+'/'+$routeParams.view+'.html';
 			else
-				return 'modules/'+$routeParams.module+'/'+$routeParams.view+'/main.html';
+				return 'views/'+$routeParams.view+'.html';
 		},
 		init:function(){
 			if(!$rootScope.temp){
@@ -65,8 +69,8 @@ var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routePar
 		task:{
 			init:function(){
 				taskResource.addListener(function(data){
-					$rootScope.tasks = data.results;
-					console.log('tasks from main')
+					if(data)
+						$rootScope.tasks = data.results;
 				});
 				taskResource.item.list().then(function(data){
 					if(data)
@@ -77,8 +81,8 @@ var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routePar
 		contact:{
 			init:function(){
 				contactResource.addListener(function(data){
-					$rootScope.contacts = data.results;
-					console.log('contacts from main')
+					if(data)
+						$rootScope.contacts = data.results;
 				});
 				contactResource.item.list().then(function(data){
 					if(data)

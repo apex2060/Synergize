@@ -22,8 +22,12 @@ app.factory('userService', function ($rootScope, $http, $q, config) {
  				//Add a weird hack because /me does not return all information stored in the user object.
  				$http.get(config.parseRoot+'users/'+data.objectId).success(function(data){
  					$rootScope.user=data;
-	 				$rootScope.$broadcast('authenticated', data);
  				});
+ 				userService.getRoles(data).then(function(roles){
+ 					data.roles = roles;
+	 				$rootScope.user=data;
+	 				$rootScope.$broadcast('authenticated', data);
+ 				})
  			}).error(function(){
 				//Prompt for login
 			});
@@ -66,6 +70,23 @@ app.factory('userService', function ($rootScope, $http, $q, config) {
 	 			$rootScope.alert('error', 'Please enter your information.')
 	 		}
  		},
+ 		getRoles:function(user){
+			var deferred = $q.defer();
+			var roleQry = 'where={"users":{"__type":"Pointer","className":"_User","objectId":"'+user.objectId+'"}}'
+			$http.get(config.parseRoot+'classes/_Role?'+roleQry).success(function(data){
+				deferred.resolve(data.results);
+			}).error(function(data){
+				deferred.reject(data);
+			});
+			return deferred.promise;
+		},
+		is:function(roleName){
+			if($rootScope.user && $rootScope.user.roles)
+				for(var i=0; i<$rootScope.user.roles.length; i++)
+					if($rootScope.user.roles[i].name==roleName)
+						return true;
+			return false;
+		},
  		logout:function(){
  			localStorage.clear();
  			$rootScope.user=null;
@@ -87,6 +108,7 @@ app.factory('userService', function ($rootScope, $http, $q, config) {
 
 
 app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
+	var siteConfig = config;
 	//Set local dataStore obj if it doesn't exist
 	if(!localStorage.getItem('FBPDS'))
 		localStorage.setItem('FBPDS', angular.toJson({
@@ -124,7 +146,7 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 				}
 			},
 			remove: function(identifier, objectId){
-				if(typeof(object)=='object')
+				if(typeof(objectId)=='object')
 					objectId = objectId.objectId
 
 				if(dataStore.wip[identifier])
@@ -145,22 +167,22 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 				return resource;
 			}
 		},
-		resource: function(className, identifier, isLive, isLocal, query, params){
+		resource: function(userConfig){
 			//The when changes to this data occur, this will broadcast on the listenId;
 			var resource = this;
 			
-			identifier = identifier?identifier:className
-			resource.listenId = 'DS-'+identifier;
-			resource.config = {
+			var defautParams = {
 				liveStreams: [],
-				className: className,
-				identifier: identifier,
-				isLive: ((isLive!=undefined)?isLive:true),
-				isLocal: ((isLocal!=undefined)?isLocal:true),
-				query: query,
-				params: params
+				className: userConfig.className,
+				identifier: 'resource/'+userConfig.className,
+				isLive: true,
+				isLocal: true,
+				query: false,
+				params: false
 			}
-			
+			resource.config = angular.extend(defautParams, userConfig)
+			resource.listenId = 'DS-'+resource.config.identifier;
+
 			
 			resource.addListener = function(callback){
 				$rootScope.$on(resource.listenId, function(evt,newData){
@@ -168,7 +190,7 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 				});
 			},
 			resource.addLiveStream = function(identifier){
-				var tempRef = new Firebase(config.fireRoot+identifier)
+				var tempRef = new Firebase(siteConfig.fireRoot+identifier)
 				resource.config.liveStreams.push(tempRef);
 			}
  			resource.setQuery = function(query){
@@ -188,12 +210,12 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 					if(resource.config.params)
 						query = resource.config.query
 					else if(resource.config.query)
-						query = config.parseRoot+'classes/'+className+'?'+query;
+						query = siteConfig.parseRoot+'classes/'+className+'?'+query;
 					else
-						query = config.parseRoot+'classes/'+className;
+						query = siteConfig.parseRoot+'classes/'+className;
 
-					if(params)
-						$http.post(query, params).success(function(data){
+					if(resource.config.params)
+						$http.post(query, resource.config.params).success(function(data){
 							dataStore.resource[identifier] = {
 								identifier: identifier,
 								results: DS.wip.keepResource(identifier, data.result),
@@ -226,7 +248,6 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 				return deferred.promise;
 			}
 			resource.broadcast = function(timestamp){
-				console.log('www broadcast',timestamp)
 				fireBroadcast(timestamp);
 			}
 			function fireBroadcast(timestamp){
@@ -239,12 +260,11 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 			}
 
 			
-			if(isLive){
-				resource.config.liveRef = new Firebase(config.fireRoot+identifier)
+			if(resource.config.isLive){
+				resource.config.liveRef = new Firebase(siteConfig.fireRoot+resource.config.identifier)
 				resource.config.liveRef.on('value', function(dataSnapshot) {
-					// alert(dataSnapshot.val())
-					if(dataStore.resource[identifier])
-						var lastUpdate = dataStore.resource[identifier].liveSync;
+					if(dataStore.resource[resource.config.identifier])
+						var lastUpdate = dataStore.resource[resource.config.identifier].liveSync;
 					if(dataSnapshot.val() != lastUpdate){
 						if(windowState.isActive){
 							resource.loadData(dataSnapshot.val())
@@ -255,16 +275,16 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 							})
 						}
 					}else{
-						$rootScope.$broadcast(resource.listenId, dataStore.resource[identifier]);
+						$rootScope.$broadcast(resource.listenId, dataStore.resource[resource.config.identifier]);
 					}
 				});
 			}
-			if(!isLocal){
+			if(!resource.config.isLocal){
 				if(dataStore.notLocal && dataStore.notLocal.indexOf(resource.config.identifier) == -1)
 					dataStore.notLocal.push(resource.config.identifier)
 			}
-			if(dataStore.resourceList.indexOf(identifier) == -1)
-				dataStore.resourceList.push(identifier)
+			if(dataStore.resourceList.indexOf(resource.config.identifier) == -1)
+				dataStore.resourceList.push(resource.config.identifier)
 
 
 			this.item = {
@@ -297,7 +317,7 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 					if(requestedResource)
 						deferred.resolve(requestedResource);
 					else
-						$http.get(config.parseRoot+'classes/'+className+'/'+objectId).success(function(data){
+						$http.get(siteConfig.parseRoot+'classes/'+className+'/'+objectId).success(function(data){
 							deferred.resolve(data);
 						}).error(function(data){
 							deferred.reject(data);
@@ -305,7 +325,6 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 					return deferred.promise;
 				},
 				save: function(object){
-					console.log('Save Object: ', object)
 					if(!object)
 						object = {};
 					if(object.objectId)
@@ -319,7 +338,7 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 					var identifier = resource.config.identifier;
 					var objectId = object.objectId;
 
-					$http.post(config.parseRoot+'classes/'+className, object).success(function(data){
+					$http.post(siteConfig.parseRoot+'classes/'+className, object).success(function(data){
 						DS.wip.remove(identifier, objectId)
 						fireBroadcast(data.createdAt)
 						deferred.resolve(data);
@@ -340,7 +359,7 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 					delete object.createdAt;
 					delete object.updatedAt;
 
-					$http.put(config.parseRoot+'classes/'+className+'/'+objectId, object).success(function(data){
+					$http.put(siteConfig.parseRoot+'classes/'+className+'/'+objectId, object).success(function(data){
 						DS.wip.remove(identifier, objectId)
 						fireBroadcast(data.updatedAt)
 						deferred.resolve(data);
@@ -356,7 +375,7 @@ app.factory('dataService', function ($rootScope, $http, $q, config, Firebase) {
 					var identifier = resource.config.identifier;
 					var objectId = object.objectId;
 
-					$http.delete(config.parseRoot+'classes/'+className+'/'+object.objectId).success(function(data){
+					$http.delete(siteConfig.parseRoot+'classes/'+className+'/'+object.objectId).success(function(data){
 						var deletedAt = new Date();
 						DS.wip.remove(identifier, objectId)
 						fireBroadcast(deletedAt.toISOString())
@@ -439,10 +458,8 @@ app.factory('fileService', function ($http, $q, config) {
 			var deferred = $q.defer();
 			var file = new Parse.File(details.name, { base64: b64});
 			file.save().then(function(data) {
-				console.log('save success',data)
 				deferred.resolve(data);
 			}, function(error) {
-				console.log('save error',error)
 				deferred.reject(error);
 			});
 			return deferred.promise;
