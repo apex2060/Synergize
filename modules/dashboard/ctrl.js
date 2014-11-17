@@ -58,6 +58,9 @@ var DashboardCtrl = app.lazy.controller('DashboardCtrl', function($rootScope, $s
 				if(confirm('Are you sture you want to delete this contact?')){
 					contactResource.item.remove(contact);
 				}
+			},
+			discussion:function(contact){
+				
 			}
 		},
 		timeline:{

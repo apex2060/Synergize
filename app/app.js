@@ -1,7 +1,7 @@
 var it = {};
 
 var app = angular.module('Synergize', ['pascalprecht.translate','ngAnimate','ngResource','ngRoute','ngTouch','firebase']);
-app.config(function($routeProvider,$translateProvider,$controllerProvider,$provide) {
+app.config(function($routeProvider,$compileProvider,$translateProvider,$controllerProvider,$provide) {
 	app.lazy = {
 		controller: $controllerProvider.register,
 		factory: 	$provide.factory,
@@ -74,6 +74,7 @@ app.config(function($routeProvider,$translateProvider,$controllerProvider,$provi
 		redirectTo: '/home'
 	});
 
+	$compileProvider.aHrefSanitizationWhitelist(/^\s*(mailto|tel|sms):/);
 	$translateProvider.useStaticFilesLoader({
 		prefix: 'assets/languages/',
 		suffix: '.json'

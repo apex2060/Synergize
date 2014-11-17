@@ -71,12 +71,14 @@
 				<button type="button" class="close" data-dismiss="modal" ng-click="tools.contact.close()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 				<h1>{{temp.viewContact.fullName}}</h1>
 				<div class="list-group">
-					<a href="tel:{{temp.viewContact.phone}}" class="list-group-item">
-						<span class="badge"><i class="fa fa-phone"></i></span> {{temp.viewContact.phone}}
-					</a>
-					<a href="mailto:{{temp.viewContact.email}}" class="list-group-item">
-						<span class="badge"><i class="fa fa-envelope"></i></span> {{temp.viewContact.email}}
-					</a>
+					<li class="list-group-item">
+						<a class="badge" href="sms:{{temp.viewContact.phone}}"><i class="fa fa-comment"></i></span></a> 
+						<a class="badge" href="tel:{{temp.viewContact.phone}}"><i class="fa fa-phone"></i></span></a>
+						<span>{{temp.viewContact.phone}}</span>
+					</li>
+					<li class="list-group-item">
+						<a class="badge" href="mailto:{{temp.viewContact.email}}"><i class="fa fa-envelope"></i></a> {{temp.viewContact.email}}
+					</li>
 					<a target="_new" href="{{tools.contact.mapLink(contact)}}" class="list-group-item">
 						<span class="badge"><i class="fa fa-globe"></i></span> 
 						<p class="list-group-item-text">{{temp.viewContact.address}}</p>

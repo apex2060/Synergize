@@ -60,7 +60,7 @@ app.factory('userService', function ($rootScope, $http, $q, config) {
 	 				delete user.password2;
 	 				$http.post(config.parseRoot+'users', user).success(function(data){
 	 					userService.login(user, true);
-	 					window.location.hash='#/main/welcome'
+	 					window.location.hash='#/welcome'
 	 				}).error(function(error){
 	 					$rootScope.alert('error', error)
 	 					$rootScope.error = error;
