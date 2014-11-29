@@ -3,7 +3,9 @@ var UserCtrl = app.lazy.controller('UserCtrl', function($rootScope, $scope, $htt
 	var tools = {
 		user:{
 			init:function(){
-				$rootScope.temp.user = angular.copy($rootScope.user);
+				userService.user().then(function(user){
+					$rootScope.temp.user = angular.copy(user);
+				});
 			},
 			update:function(profile){
 				var profileUpdates = {
@@ -37,9 +39,6 @@ var UserCtrl = app.lazy.controller('UserCtrl', function($rootScope, $scope, $htt
 			}
 		}
 	}
-	$scope.$on('authenticated', function() {
-		tools.user.init();
-	})
 	$scope.tools = tools;
 	it.UserCtrl=$scope;
 });

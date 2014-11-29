@@ -1,6 +1,6 @@
 var it = {};
 
-var app = angular.module('Synergize', ['pascalprecht.translate','ngAnimate','ngResource','ngRoute','ngTouch','firebase']);
+var app = angular.module('Synergize', ['pascalprecht.translate','ngAnimate','ngResource','ngRoute','ngTouch','ngDraggable','firebase']);
 app.config(function($routeProvider,$compileProvider,$translateProvider,$controllerProvider,$provide) {
 	app.lazy = {
 		controller: $controllerProvider.register,
@@ -11,17 +11,14 @@ app.config(function($routeProvider,$compileProvider,$translateProvider,$controll
 	function requires($q, module, view, id){
 		var deferred = $q.defer();
 		var includes = [];
-
-		console.log(module,view,id)
-		if(module == 'admin')
+		
+		if(module)
+			includes.push('modules/'+module+'/ctrl');
+			
+		var subModules = ['admin','dashboard'];
+		if(subModules.indexOf(module) != -1)
 			if(view)
-				includes.push('modules/admin/'+view+'/ctrl');
-			else
-				deferred.resolve();
-		else if(module == 'dashboard')
-			includes.push('modules/dashboard/ctrl');
-		else if(module == 'user')
-			includes.push('modules/user/ctrl');
+				includes.push('modules/'+module+'/'+view+'/ctrl');
 		else
 			deferred.resolve();
 

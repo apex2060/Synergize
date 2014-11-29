@@ -3,23 +3,41 @@
 	- Allow creation of 
  -->
 
-<div class="container" ng-controller="DashboardCtrl">
-	<div class="row">
+<div class="container" ng-controller="ContactCtrl">
+	<div class="row" >
+		<div class="col-md-4">
+			<div class="well">
+				<button class="btn btn-default btn-block" ng-click="tools.group.create()">Create Group</button>
+				<ul class="tree">
+					<li ng-repeat="group in groups" ng-include="'treeGroup.html'"></li>
+				</ul>
+			</div>
+		</div>
 		<div class="col-md-4">
 			<ul class="list-group">
-				<li class="list-group-item">
-					<input type="text" class="form-control" ng-model="temp.contactSearch">
-				</li>
-				<li class="list-group-item" ng-repeat="contact in contacts" ng-click="tools.contact.focus(contact)">
+					<!--ng-click="tools.contact.focus(contact)"-->
+				<li class="list-group-item" 
+					ng-repeat="contact in contacts" 
+					ng-hide="contact.isAssigned"
+					ng-drag="true" ng-drag-data="contact" 
+					ng-drag-success="tools.dnd.drag($data,$event)">
 					<span>{{contact.fullName}}</span>
 					<i class="fa fa-trash pull-right" ng-click="tools.contact.remove(contact)"></i>
 					<i class="fa fa-phone pull-right" ng-click="tools.contact.call(contact)"></i>
 				</li>
 			</ul>
+			<ul class="list-group">
+				<li class="list-group-item"
+					ng-repeat="call in calls"
+					ng-click="tools.call.focus(call)">
+					{{call.extNumber}}
+				</li>
+			</ul>
+			<!--<div class="well">{{calls}}</div>-->
 		</div>
 		
 		<!--EDIT CONTACT INFO-->
-		<div class="col-md-8" ng-hide="temp.viewContact">
+		<div class="col-md-4" ng-hide="temp.viewContact">
 			<div class="well clearfix">
 				<h1>Add A contact</h1>
 				<form class="form-horizontal" role="form" ng-submit="tools.contact.add(temp.contact)">
@@ -59,6 +77,7 @@
 							<textarea class="form-control" id="contactAddress" placeholder="Address" ng-model="temp.contact.address"></textarea>
 						</div>
 					</div>
+					<button type="button" class="btn btn-warning" ng-click="tools.contact.generate()">Random</button>
 					<button type="submit" class="btn btn-info pull-right">Save contact</button>
 				</form>
 			</div>
@@ -66,7 +85,7 @@
 		
 		
 		<!--CONTACT INFO AND CONVERSATION-->
-		<div class="col-md-8" ng-show="temp.viewContact">
+		<div class="col-md-4" ng-show="temp.viewContact">
 			<div class="well clearfix">
 				<button type="button" class="close" data-dismiss="modal" ng-click="tools.contact.close()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 				<h1>{{temp.viewContact.fullName}}</h1>
@@ -110,4 +129,31 @@
 			</div>
 		</div>
 	</div>
+	
+	<script type="text/ng-template" id="treeGroup.html">
+		<div ng-show="group.title" ng-drop="true" ng-drop-success="tools.dnd.drop(group,$data,$event)">
+			<span>{{group.title}}</span>
+			<i class="fa fa-pencil pull-right" ng-click="tools.group.edit(group)"></i>
+			<i class="fa fa-plus pull-right" ng-click="tools.group.create(group)"></i>
+		</div>
+		<form class="input-group" ng-hide="group.title" ng-submit="tools.group.set(group)">
+			<input type="text" class="form-control" ng-model="group.tempTitle"></input>
+			<span class="input-group-addon" ng-click="tools.group.set(group)"><i class="fa fa-save"></i></span>
+			<span class="input-group-addon"><i class="fa fa-trash" ng-click="tools.group.remove(this, group)"></i></span>
+		</form>
+		<ul>
+			<li ng-repeat="group in group.groups" ng-include="'treeGroup.html'"></li>
+		</ul>
+		<ul>
+			<li ng-repeat="contact in group.contacts" ng-include="'treeContact.html'"></li>
+		</ul>
+	</script>
+
+	<script type="text/ng-template" id="treeContact.html">
+		<div>
+			<span>{{contact.fullName}}</span>
+			<i class="fa fa-trash pull-right" ng-click="tools.group.removeContact(group,contact)"></i>
+			<i class="fa fa-share-square-o pull-right" ng-click="tools.contact.focus(contact)"></i>
+		</div>
+	</script>
 </div>

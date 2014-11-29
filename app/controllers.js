@@ -1,8 +1,31 @@
-var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $routeParams, config, userService, dataService){
+var MainCtrl = app.controller('MainCtrl', function($rootScope, $scope, $q, $routeParams, config, userService, dataService){
 	$rootScope.rp = $routeParams;
 	$rootScope.config = config;
 	var taskResource = new dataService.resource({className: 'Task', identifier:'taskList'});
 	var contactResource = new dataService.resource({className: 'Contact', identifier:'contactList'});
+
+	var callListDefer = $q.defer();
+	userService.user().then(function(user){
+		var calls = new dataService.resource({
+			className: 'Calls', 
+			identifier:'callList',
+			query: 'order=-updatedAt&limit=10&include=agent'
+		});
+			// calls.setQuery('order=-updatedAt&limit=10&include=agent');
+		callListDefer.resolve(calls);
+		calls.item.list().then(function(data){
+			$rootScope.calls = data.results;
+			// tools.formatAll($rootScope.calls);
+		})
+		$rootScope.$on(calls.listenId, function(event, data){
+			if(data){
+				$rootScope.calls = data.results;
+				// tools.formatAll($rootScope.calls);
+			}
+		})
+	});
+	var callListPromise = callListDefer.promise;
+	
 	
 	var rootTools = {
 		user: userService,

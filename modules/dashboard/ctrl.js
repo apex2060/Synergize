@@ -1,9 +1,7 @@
-var DashboardCtrl = app.lazy.controller('DashboardCtrl', function($rootScope, $scope, $routeParams, $timeout, config, userService, dataService){
+var DashboardCtrl = app.lazy.controller('DashboardCtrl', function($rootScope, $scope, $routeParams, $timeout, config, userService, dataService, contactService){
 	var taskResource 	= new dataService.resource({className: 'Task', identifier:'taskList'});
-	var contactResource = new dataService.resource({className: 'Contact', identifier:'contactList'});
 	it.tr = taskResource;
-	it.cr = contactResource;
-	
+
 	var tools = {
 		init:function(){
 			userService.user().then(function(){
@@ -30,39 +28,7 @@ var DashboardCtrl = app.lazy.controller('DashboardCtrl', function($rootScope, $s
 				})
 			}
 		},
-		contact:{
-			item: contactResource.item,
-			init: function(){
-				//Do something on controller init
-			},
-			focus:function(contact){
-				$rootScope.temp.viewContact = contact;	
-			},
-			close:function(){
-				$rootScope.temp.viewContact = null;
-			},
-			edit:function(contact){
-				$rootScope.temp.contact = contact;
-				$rootScope.temp.viewContact = null;	
-			},
-			add:function(contact){
-				if(!contact)
-					exit;
-				contact.fullName = contact.firstName+' '+contact.lastName;
-				contactResource.item.save(contact).then(function(){
-					$rootScope.temp.contact = {};
-					$rootScope.alert('success', 'Contact saved.')
-				})
-			},
-			remove:function(contact){
-				if(confirm('Are you sture you want to delete this contact?')){
-					contactResource.item.remove(contact);
-				}
-			},
-			discussion:function(contact){
-				
-			}
-		},
+		contact: contactService,
 		timeline:{
 			init:function(){
 				var color = ['gray','yellow','purple','orange',''];
@@ -108,4 +74,51 @@ var DashboardCtrl = app.lazy.controller('DashboardCtrl', function($rootScope, $s
 	$scope.tools = tools;
 	tools.init();
 	it.DashboardCtrl=$scope;
+});
+
+
+
+app.lazy.factory('contactService', function ($rootScope, $http, $q, config, dataService) {
+	var contactResource = new dataService.resource({className: 'Contact', identifier:'contactList'});
+	
+	var contactService = {
+		item: contactResource.item,
+		init: function(){
+			//Do something on controller init
+		},
+		current:function(){
+			return $rootScope.temp.viewContact;
+		},
+		view:function(contact){
+			$rootScope.temp.viewContact = contact;
+		},
+		close:function(){
+			$rootScope.temp.viewContact = null;
+		},
+		edit:function(contact){
+			$rootScope.temp.contact = contact;
+			$rootScope.temp.viewContact = null;	
+		},
+		add:function(contact){
+			if(!contact)
+				exit;
+			contact.fullName = contact.firstName+' '+contact.lastName;
+			contactResource.item.save(contact).then(function(){
+				$rootScope.temp.contact = {};
+				$rootScope.alert('success', 'Contact saved.')
+			})
+		},
+		remove:function(contact){
+			if(confirm('Are you sture you want to delete this contact?')){
+				contactResource.item.remove(contact);
+			}
+		},
+		discussion:function(contact){
+			$http.get(config.parseRoot+'classes/Discussion').success(function(data){
+				
+			})
+		}
+	}
+
+	return contactService;	
 });
