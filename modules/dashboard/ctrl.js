@@ -86,6 +86,20 @@ app.lazy.factory('contactService', function ($rootScope, $http, $q, config, data
 		init: function(){
 			//Do something on controller init
 		},
+		get:{
+			byPhone: function(number){
+				var deferred = $q.defer();
+				number = number.replace(/\D/g,'');
+				contactResource.item.list().then(function(data){
+					var contacts = data.results;
+					for(var i=0; i<contacts.length; i++)
+						if(contacts[i].phone == number)
+							deferred.resolve(contacts[i]);
+					deferred.resolve(null);
+				})
+				return deferred.promise;
+			}	
+		},
 		current:function(){
 			return $rootScope.temp.viewContact;
 		},
@@ -111,6 +125,7 @@ app.lazy.factory('contactService', function ($rootScope, $http, $q, config, data
 		remove:function(contact){
 			if(confirm('Are you sture you want to delete this contact?')){
 				contactResource.item.remove(contact);
+				delete $rootScope.temp.contact;
 			}
 		},
 		discussion:function(contact){

@@ -1,0 +1,14 @@
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th ng-click="tools.filter.orderBy('fullName')">Name</th>
+			<th ng-click="tools.filter.orderBy('email')">Email</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="contact in contacts | filter:temp.search | orderBy:filter.attr" title="{{contact.tags}}" class="{{contact.tags}}">
+			<td>{{contact.fullName}}</td>
+			<td>{{contact.email}}</td>
+		</tr>
+	</tbody>
+</table>

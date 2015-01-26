@@ -1,23 +1,43 @@
-var ContactCtrl = app.lazy.controller('ContactCtrl', function($rootScope, $scope, $routeParams, $timeout, config, userService, dataService, contactService){
+var ContactCtrl = app.lazy.controller('ContactCtrl', function($rootScope, $scope, $routeParams, $timeout, $http, config, userService, dataService, contactService){
 	var contactResource = new dataService.resource({className: 'Contact', identifier:'contactList'});
 	var groupResource = new dataService.resource({className: 'Group', identifier:'groupList'});
 	
 	var tools = {
+		view: function(view){
+			$scope.view = view;
+		},
+		filter:{
+			orderBy: function(attr){
+				$scope.filter.attr = attr;
+			}
+		},
 		contact: angular.extend(contactService, {
+			timeline: function(smallContact){
+				window.location = '#/dashboard/timeline/'+smallContact.objectId
+			},
 			focus: function(smallContact){
 				contactResource.item.list().then(function(data){
 					var contactList = data.results;
 					for(var i=0; i<contactList.length; i++)
-						if(contactList[i].objectId == smallContact.objectId)
+						if(contactList[i].objectId == smallContact.objectId){
+							tools.note.list(contactList[i])
 							tools.contact.view(contactList[i])
+							$('#contactModal').modal('show');
+						}
 				})
+			},
+			modify:function(contact){
+				tools.contact.edit(contact);
+				$('#contactModal').modal('show');
 			},
 			generate:function(){
 				$rootScope.temp.contact = {
 					firstName: chance.first(),
 					lastName: chance.last(),
 					phone: chance.phone(),
-					email: chance.email()
+					email: chance.email(),
+					address: chance.address(),
+					details: chance.paragraph()
 				}
 			}
 		}),
@@ -103,10 +123,45 @@ var ContactCtrl = app.lazy.controller('ContactCtrl', function($rootScope, $scope
 			drop:function(group,contact){
 				tools.group.addContact(group,contact);
 			}
+		},
+		note: {
+			list: function(contact){
+				$http.get(config.parseRoot+'classes/Note?where={contactId: "'+contact.objectId+'"}').success(function(results){
+					it.c = results;
+					alert(contact.objectId)
+				})
+				// var Note = Parse.Object.extend("Note");
+				// var query = new Parse.Query(Note);
+				// query.equalTo("contactId", contact.objectId);
+				// query.find({
+				// 	success: function(results) {
+				// 		$rootScope.temp.notes = angular.fromJson(angular.toJson(results));
+				// 	},
+				// 	error: function(error) {
+				// 		alert("Error: " + error.code + " " + error.message);
+				// 	}
+				// });
+			},
+			add: function(contact, text){
+				var Note = Parse.Object.extend("Note");
+				var note = new Note();
+				note.set('contactId', contact.objectId);
+				note.set('comment', text);
+				note.save(null, {
+					success: function(note){
+						tools.note.list(contact);
+					},error: function(note, error) {
+						alert('Failed to create new object, with error code: ' + error.message);
+					}
+				});
+			}
 		}
 	}
 	
 	
+	
+	$scope.filter = {};
+	$scope.view = 'grid';
 	if(!$rootScope.groups)
 		tools.group.init();
 	

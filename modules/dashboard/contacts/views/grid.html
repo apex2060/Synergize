@@ -1,0 +1,15 @@
+<div class="col-md-3 col-sm-4 cb" ng-repeat="contact in contacts | filter:temp.search" title="{{contact.tags}}">
+	<div class="well {{contact.tags}}">
+						<!--ng-click="tools.contact.focus(contact)"-->
+						<!--ng-drag="true" ng-drag-data="contact" -->
+						<!--ng-drag-success="tools.dnd.drag($data,$event)">-->
+		<h3>{{contact.fullName}}</h3>
+		<p>{{contact.phone}}</p>
+		<div class="btn-group btn-group-justified" role="group">
+			<a class="btn btn-default" title="Edit Contact" ng-click="tools.contact.modify(contact)">					<i class="fa fa-pencil"></i></a>
+			<a class="btn btn-default" title="Open Contact Feed" ng-click="tools.contact.timeline(contact)">			<i class="fa fa-newspaper-o"></i></a>
+			<a href="mailto:{{contact.email}}" class="btn btn-default" title="Email">									<i class="fa fa-envelope"></i></a>
+			<a href="tel:{{contact.phone}}" class="btn btn-default" title="Call">										<i class="fa fa-phone"></i></a>
+		</div>
+	</div>
+</div>

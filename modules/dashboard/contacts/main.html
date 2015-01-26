@@ -1,159 +1,71 @@
-<!-- 
-	- Load all users (allow assignment of contacts to users)
-	- Allow creation of 
- -->
-
 <div class="container" ng-controller="ContactCtrl">
-	<div class="row" >
-		<div class="col-md-4">
-			<div class="well">
-				<button class="btn btn-default btn-block" ng-click="tools.group.create()">Create Group</button>
-				<ul class="tree">
-					<li ng-repeat="group in groups" ng-include="'treeGroup.html'"></li>
-				</ul>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<ul class="list-group">
-					<!--ng-click="tools.contact.focus(contact)"-->
-				<li class="list-group-item" 
-					ng-repeat="contact in contacts" 
-					ng-hide="contact.isAssigned"
-					ng-drag="true" ng-drag-data="contact" 
-					ng-drag-success="tools.dnd.drag($data,$event)">
-					<span>{{contact.fullName}}</span>
-					<i class="fa fa-trash pull-right" ng-click="tools.contact.remove(contact)"></i>
-					<i class="fa fa-phone pull-right" ng-click="tools.contact.call(contact)"></i>
-				</li>
-			</ul>
-			<ul class="list-group">
-				<li class="list-group-item"
-					ng-repeat="call in calls"
-					ng-click="tools.call.focus(call)">
-					{{call.extNumber}}
-				</li>
-			</ul>
-			<!--<div class="well">{{calls}}</div>-->
-		</div>
-		
-		<!--EDIT CONTACT INFO-->
-		<div class="col-md-4" ng-hide="temp.viewContact">
+	<nav class="navbar navbar-inverse moj9" role="navigation" ng-include="'modules/dashboard/contacts/partials/navbar.html'"></nav>
+
+	<div class="row contacts">
+		<h1>Contact Count: {{contacts.length}}</h1>
+		<div ng-include="'modules/dashboard/contacts/views/'+view+'.html'"></div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6">
 			<div class="well clearfix">
-				<h1>Add A contact</h1>
+				<h1>Add A Contact</h1>
 				<form class="form-horizontal" role="form" ng-submit="tools.contact.add(temp.contact)">
-					<div class="form-group">
-						<label for="contactFirstName" class="col-sm-2 control-label">First Name</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="contactFirstName" placeholder="First Name" ng-model="temp.contact.firstName">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="contactLastName" class="col-sm-2 control-label">Last Name</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="contactLastName" placeholder="Last Name" ng-model="temp.contact.lastName">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="contactPhone" class="col-sm-2 control-label">Phone</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="contactPhone" placeholder="Phone" ng-model="temp.contact.phone">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="contactEmail" class="col-sm-2 control-label">Email</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="contactEmail" placeholder="Email" ng-model="temp.contact.email">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="contactProfile" class="col-sm-2 control-label">Profile Link</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="contactProfile" placeholder="Profile Link" ng-model="temp.contact.profile">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="contactAddress" class="col-sm-2 control-label">Address</label>
-						<div class="col-sm-10">
-							<textarea class="form-control" id="contactAddress" placeholder="Address" ng-model="temp.contact.address"></textarea>
-						</div>
-					</div>
+					<div ng-include="'modules/dashboard/contacts/partials/contactForm.html'"></div>
 					<button type="button" class="btn btn-warning" ng-click="tools.contact.generate()">Random</button>
+					<button type="button" class="btn btn-danger" ng-click="tools.contact.remove(temp.contact)" ng-show="temp.contact.objectId">Delete contact</button>
 					<button type="submit" class="btn btn-info pull-right">Save contact</button>
 				</form>
 			</div>
 		</div>
-		
-		
-		<!--CONTACT INFO AND CONVERSATION-->
-		<div class="col-md-4" ng-show="temp.viewContact">
-			<div class="well clearfix">
-				<button type="button" class="close" data-dismiss="modal" ng-click="tools.contact.close()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h1>{{temp.viewContact.fullName}}</h1>
-				<div class="list-group">
-					<li class="list-group-item">
-						<a class="badge" href="sms:{{temp.viewContact.phone}}"><i class="fa fa-comment"></i></span></a> 
-						<a class="badge" href="tel:{{temp.viewContact.phone}}"><i class="fa fa-phone"></i></span></a>
-						<span>{{temp.viewContact.phone}}</span>
-					</li>
-					<li class="list-group-item">
-						<a class="badge" href="mailto:{{temp.viewContact.email}}"><i class="fa fa-envelope"></i></a> {{temp.viewContact.email}}
-					</li>
-					<a target="_new" href="{{tools.contact.mapLink(contact)}}" class="list-group-item">
-						<span class="badge"><i class="fa fa-globe"></i></span> 
-						<p class="list-group-item-text">{{temp.viewContact.address}}</p>
-					</a>
+	</div>
+
+	<div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title">Contact</h4>
 				</div>
-				
-				<a class="btn btn-warning pull-right" ng-click="tools.contact.edit(temp.viewContact)">Edit Contact</a>
-				
-				<div class="media">
-					<a class="media-left" href="#">
-						<img ng-src="{{user.pic.src}}">
-					</a>
-					<div class="media-body">
-						<h4 class="media-heading">{{user.fullName}}</h4>
-						<p>Cras sit amet nibh spanbero, in gravida nulla. Nulla vel metus scelerisque ante solspancitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
-						<!-- Nested media object -->
-						<div class="media">
-							<a class="media-left" href="#">
-								<img ng-src="{{user.pic.src}}">
-							</a>
-							<div class="media-body">
-								<h4 class="media-heading">{{user.fullName}}</h4>
-								<p>Cras sit amet nibh spanbero, in gravida nulla. Nulla vel metus scelerisque ante solspancitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
-								<!-- Nested media object -->
-							</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-9">
+							<form class="form-horizontal" role="form" ng-submit="tools.contact.add(temp.contact)">
+								<div ng-include="'modules/dashboard/contacts/partials/contactForm.html'"></div>
+									
+								<button type="button" class="btn btn-danger" ng-click="tools.contact.remove(temp.contact)" ng-show="temp.contact.objectId">Delete contact</button>
+								<button type="submit" class="btn btn-info pull-right">Save contact</button>
+							</form>
+						</div>
+						<div class="col-md-3">
+							<ul class="list-group">
+								<!--ng-show="twilio.status=='ready'"-->
+								<li class="list-group-item">Phone: 208-357-9555</li>
+								<!--Connection Buttons-->
+								<li class="list-group-item" ng-show="!twilio.status">
+									<button type="button" class="btn btn-primary btn-block" ng-click="rootTools.twilio.init()">Start Phone</button>
+								</li>
+								<li class="list-group-item" ng-show="twilio.status=='connecting'">
+									<button type="button" class="btn btn-default btn-block">Connecting...</button>
+								</li>
+								<!--Call Status-->
+								<li class="list-group-item" ng-show="twilio.callStatus=='ended'">
+									<!--<input type="tel" class="form-control" placeholder="Number To Call" ng-model="outbound">-->
+									<button type="button" class="btn btn-primary btn-block" ng-click="rootTools.twilio.call(temp.contact.phone)">Call</button>
+								</li>
+								<li class="list-group-item" ng-show="twilio.callStatus=='incoming'">
+									<button type="button" class="btn btn-primary btn-block" ng-click="rootTools.twilio.accept()">Answer</button>
+								</li>
+								<li class="list-group-item" ng-show="twilio.callStatus=='connected'">
+									<button type="button" class="btn btn-danger btn-block" ng-click="rootTools.twilio.hangup()">Hangup</button>
+								</li>
+							</ul>
 						</div>
 					</div>
 				</div>
+				<div class="modal-footer"></div>
 			</div>
 		</div>
 	</div>
-	
-	<script type="text/ng-template" id="treeGroup.html">
-		<div ng-show="group.title" ng-drop="true" ng-drop-success="tools.dnd.drop(group,$data,$event)">
-			<span>{{group.title}}</span>
-			<i class="fa fa-pencil pull-right" ng-click="tools.group.edit(group)"></i>
-			<i class="fa fa-plus pull-right" ng-click="tools.group.create(group)"></i>
-		</div>
-		<form class="input-group" ng-hide="group.title" ng-submit="tools.group.set(group)">
-			<input type="text" class="form-control" ng-model="group.tempTitle"></input>
-			<span class="input-group-addon" ng-click="tools.group.set(group)"><i class="fa fa-save"></i></span>
-			<span class="input-group-addon"><i class="fa fa-trash" ng-click="tools.group.remove(this, group)"></i></span>
-		</form>
-		<ul>
-			<li ng-repeat="group in group.groups" ng-include="'treeGroup.html'"></li>
-		</ul>
-		<ul>
-			<li ng-repeat="contact in group.contacts" ng-include="'treeContact.html'"></li>
-		</ul>
-	</script>
-
-	<script type="text/ng-template" id="treeContact.html">
-		<div>
-			<span>{{contact.fullName}}</span>
-			<i class="fa fa-trash pull-right" ng-click="tools.group.removeContact(group,contact)"></i>
-			<i class="fa fa-share-square-o pull-right" ng-click="tools.contact.focus(contact)"></i>
-		</div>
-	</script>
 </div>

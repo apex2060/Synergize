@@ -55,6 +55,9 @@ h1{
 
 
 /*CSS Overrides*/
+table{
+	background: #EEE;
+}
 .modal-body>img{
 	max-width: 100%;
 }
@@ -178,7 +181,141 @@ div.thumbnail{
 
 
 
+.cb{
+	min-height: 300px;
+}
 
+
+
+
+
+
+
+
+
+
+/*Chat*/
+.parent{
+	cursor: cell;
+}
+.parent:hover>.child{
+	display: block;
+}
+.child{
+	display:none;
+}
+.chat{
+	list-style: none;
+	max-height: 300px;
+	overflow: auto;
+}
+.chat li{
+	border: 1px solid #999;
+	padding: 5px;
+	border-radius: 10px;
+}
+
+.chat .left{
+	margin-right: 25px;
+	border-top-left-radius: 0px;
+}
+	.chat .left .from{
+		
+	}
+	
+.chat .right{
+	margin-left: 25px;
+	border-top-right-radius: 0px;
+}
+	.chat .right .from{
+		float: right;
+	}
+
+
+
+
+/*.called, .email{*/
+/*	border-left: 2px solid #0F2;*/
+/*}*/
+/*.message{*/
+/*	border-left: 2px solid #FF0;*/
+/*}*/
+/*.noanswer, .callback{*/
+/*	border-left: 2px solid #F90;*/
+/*}*/
+/*.highschool{*/
+/*	border-right: 4px dotted #0F2;*/
+/*}*/
+/*.jrhigh{*/
+/*	border-right: 4px dotted #02F;*/
+/*}*/
+/*.midschool{*/
+/*	border-right: 4px dotted #F99;*/
+/*}*/
+/*.discard{*/
+/*	display:none;*/
+/*}*/
+
+
+
+
+
+
+
+.ih .info{
+	position: relative;
+}
+.ih .info a{
+	position: absolute;
+	width: 44px;
+	height: 44px;
+	top: 	88px;
+	left: 88px;
+	border-radius: 5px;
+	background: #EEE;
+	text-align: center;
+	line-height: 44px;
+	z-index: 10;
+}
+
+.ih .info a i{
+	
+}
+
+.ih .info a.center {
+	top: 	88px;
+	left: 88px;
+}
+.ih .info a.top {
+	top: 	10px;
+}
+.ih .info a.left {
+	left: 10px;
+}
+.ih .info a.bottom {
+	top: initial;
+	bottom: 10px;
+}
+.ih .info a.topleft {
+	top: 35px;
+	left: 35px;
+}
+.ih .info a.topright {
+	left: initial;
+	top: 35px;
+	right: 35px;
+}
+.ih .info a.bottomleft {
+	top: initial;
+	bottom: 35px;
+	left: 35px;
+}
+.ih .info a.bottomright {
+	top: initial;
+	left: initial;
+	bottom: 35px;
+	right: 35px;
+}
 
 
 
